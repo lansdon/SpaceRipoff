@@ -28,7 +28,7 @@ int main(int argc, int argv[]) {
 	****************************************************************************/
 
 	// cpVect is a 2D vector and cpv() is a shortcut for initializing them.
-	cpVect gravity = cpv(0, -100);
+	cpVect gravity = cpv(0, 10);
   
 	// Create an empty space.
 	cpSpace *space = cpSpaceNew();
@@ -37,9 +37,9 @@ int main(int argc, int argv[]) {
 	// Add a static line segment shape for the ground.
 	// We'll make it slightly tilted so the ball will roll off.
 	// We attach it to space->staticBody to tell Chipmunk it shouldn't be movable.
-	sf::Shape borderBottom = sf::Shape::Line(0, 0, 40, 10, 5, sf::Color::White);
-	borderBottom.Move(-20, 10);
-	cpShape *ground = cpSegmentShapeNew(space->staticBody, cpv(-20, 5), cpv(20, -5), 0);
+	sf::Shape borderBottom = sf::Shape::Line(0, 0, 800, 500, 5, sf::Color::White);
+	borderBottom.Move(0, 50);
+	cpShape *ground = cpSegmentShapeNew(space->staticBody, cpv(0, 50), cpv(800, 550), 0);
 	cpShapeSetFriction(ground, 1);
 	cpSpaceAddShape(space, ground);
   
@@ -58,14 +58,14 @@ int main(int argc, int argv[]) {
 	// The cpSpaceAdd*() functions return the thing that you are adding.
 	// It's convenient to create and add an object in one line.
 	cpBody *ballBody = cpSpaceAddBody(space, cpBodyNew(mass, moment));
-	cpBodySetPos(ballBody, cpv(0, 15));
+	cpBodySetPos(ballBody, cpv(10, 15));
   
 	// Now we create the collision shape for the ball.
 	// You can create multiple collision shapes that point to the same body.
 	// They will all be attached to the body and move around to follow it.
 	cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
 	cpShapeSetFriction(ballShape, 0.7);
-	sf::Shape ballSprite = sf::Shape::Circle(0.0, 15.0, (float)radius, sf::Color(255, 255, 255)); 
+	sf::Shape ballSprite = sf::Shape::Circle(10.0, 15.0, (float)radius, sf::Color(255, 255, 255)); 
   
    
 
@@ -143,9 +143,10 @@ int main(int argc, int argv[]) {
 				time, pos.x, pos.y, vel.x, vel.y
 			);
 			std::stringstream ssDebug;
-			ssDebug << "Time: " << (int)time << "\n" <<
-				"ball=(" << (int)(pos.x) << "," << (int)(pos.y) << ")\n" <<
-				"velocity=("<< (int)(pos.x) << "," << (int)(pos.y) << ")\n";
+			ssDebug << "Super sweet Space Ripoff\n" << 
+						"Time: " << (int)time << "\n" <<
+						"ball=(" << (int)(pos.x) << "," << (int)(pos.y) << ")\n" <<
+						"velocity=("<< (int)(pos.x) << "," << (int)(pos.y) << ")\n";
 			debugTxt1.SetText(ssDebug.str());
 
 			cpSpaceStep(space, timeStep);
@@ -159,7 +160,7 @@ int main(int argc, int argv[]) {
 
         // Draw the background, paddles and ball sprites
         App.Draw(Background);
-        App.Draw(Ball);
+//        App.Draw(Ball);
 		App.Draw(ballSprite);
 		App.Draw(debugTxt1);
 		App.Draw(borderBottom);
@@ -175,7 +176,7 @@ int main(int argc, int argv[]) {
 
 	// Clean up our objects and exit!
 	cpShapeFree(ballShape);
-	cpBodyFree(ballBody);      //Causing a crash for some reason = memory error
+//	cpBodyFree(ballBody);      //Causing a crash for some reason = memory error
 	cpShapeFree(ground);
 	cpSpaceFree(space);
 
