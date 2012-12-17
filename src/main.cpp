@@ -48,7 +48,7 @@ int main(int argc, int argv[]) {
   // These include the mass, position, velocity, angle, etc. of the object.
   // Then we attach collision shapes to the cpBody to give it a size and shape.
   
-	cpFloat radius = 5;
+	cpFloat radius = 10;
 	cpFloat mass = 1;
   
 	// The moment of inertia is like mass for rotation
@@ -65,7 +65,7 @@ int main(int argc, int argv[]) {
 	// They will all be attached to the body and move around to follow it.
 	cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
 	cpShapeSetFriction(ballShape, 0.7);
-	sf::Shape ballSprite = sf::Shape::Circle(10.0, 15.0, (float)radius, sf::Color(255, 255, 255)); 
+	sf::Shape ballSprite = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
   
    
 
