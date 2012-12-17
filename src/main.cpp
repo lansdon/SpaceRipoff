@@ -32,46 +32,47 @@ int main(int argc, int argv[]) {
   
 	// Create an empty space.
 	cpSpace *space = cpSpaceNew();
-	//cpSpaceSetGravity(space, gravity);
- // 
-	//// Add a static line segment shape for the ground.
-	//// We'll make it slightly tilted so the ball will roll off.
-	//// We attach it to space->staticBody to tell Chipmunk it shouldn't be movable.
-	//sf::Shape borderBottom = sf::Shape::Line(0, 0, 40, 10, 5, sf::Color::White);
-	//borderBottom.Move(-20, 10);
-	//cpShape *ground = cpSegmentShapeNew(space->staticBody, cpv(-20, 5), cpv(20, -5), 0);
-	//cpShapeSetFriction(ground, 1);
-	//cpSpaceAddShape(space, ground);
- // 
- // // Now let's make a ball that falls onto the line and rolls off.
- // // First we need to make a cpBody to hold the physical properties of the object.
- // // These include the mass, position, velocity, angle, etc. of the object.
- // // Then we attach collision shapes to the cpBody to give it a size and shape.
- // 
-	//cpFloat radius = 5;
-	//cpFloat mass = 1;
- // 
-	//// The moment of inertia is like mass for rotation
-	//// Use the cpMomentFor*() functions to help you approximate it.
-	//cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
- // 
-	//// The cpSpaceAdd*() functions return the thing that you are adding.
-	//// It's convenient to create and add an object in one line.
-	//cpBody *ballBody = cpSpaceAddBody(space, cpBodyNew(mass, moment));
-	//cpBodySetPos(ballBody, cpv(0, 15));
- // 
-	//// Now we create the collision shape for the ball.
-	//// You can create multiple collision shapes that point to the same body.
-	//// They will all be attached to the body and move around to follow it.
-	//cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
-	//cpShapeSetFriction(ballShape, 0.7);
- // 
- //  
+	cpSpaceSetGravity(space, gravity);
+  
+	// Add a static line segment shape for the ground.
+	// We'll make it slightly tilted so the ball will roll off.
+	// We attach it to space->staticBody to tell Chipmunk it shouldn't be movable.
+	sf::Shape borderBottom = sf::Shape::Line(0, 0, 40, 10, 5, sf::Color::White);
+	borderBottom.Move(-20, 10);
+	cpShape *ground = cpSegmentShapeNew(space->staticBody, cpv(-20, 5), cpv(20, -5), 0);
+	cpShapeSetFriction(ground, 1);
+	cpSpaceAddShape(space, ground);
+  
+  // Now let's make a ball that falls onto the line and rolls off.
+  // First we need to make a cpBody to hold the physical properties of the object.
+  // These include the mass, position, velocity, angle, etc. of the object.
+  // Then we attach collision shapes to the cpBody to give it a size and shape.
+  
+	cpFloat radius = 5;
+	cpFloat mass = 1;
+  
+	// The moment of inertia is like mass for rotation
+	// Use the cpMomentFor*() functions to help you approximate it.
+	cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
+  
+	// The cpSpaceAdd*() functions return the thing that you are adding.
+	// It's convenient to create and add an object in one line.
+	cpBody *ballBody = cpSpaceAddBody(space, cpBodyNew(mass, moment));
+	cpBodySetPos(ballBody, cpv(0, 15));
+  
+	// Now we create the collision shape for the ball.
+	// You can create multiple collision shapes that point to the same body.
+	// They will all be attached to the body and move around to follow it.
+	cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
+	cpShapeSetFriction(ballShape, 0.7);
+	sf::Shape ballSprite = sf::Shape::Circle(0.0, 15.0, (float)radius, sf::Color(255, 255, 255)); 
+  
+   
 
-	//cpFloat time = 0; 
-	//cpVect pos = cpBodyGetPos(ballBody);
-	//cpVect vel = cpBodyGetVel(ballBody);
- //
+	cpFloat time = 0; 
+	cpVect pos = cpBodyGetPos(ballBody);
+	cpVect vel = cpBodyGetVel(ballBody);
+ 
 
   /****************************************************************************
 	END CHIPMUNK
@@ -133,22 +134,22 @@ int main(int argc, int argv[]) {
 			  // stepping forward through time in small increments called steps.
 			  // It is *highly* recommended to use a fixed size time step.
 //			  for(cpFloat time = 0; time < 2; time += timeStep) {
-			//pos = cpBodyGetPos(ballBody);
-			//vel = cpBodyGetVel(ballBody);
-			//printf(
-			//	"Time is %5.2f. ballBody is at (%5.2f, %5.2f). It's velocity is (%5.2f, %5.2f)\n",
-			//	time, pos.x, pos.y, vel.x, vel.y
-			//);
-			//std::stringstream ssDebug;
-			//ssDebug << "Time: " << time << "\n" <<
-			//	"ball=(" << (int)(pos.x) << "," << (int)(pos.y) << ")\n" <<
-			//	"velocity=("<< (int)(pos.x) << "," << (int)(pos.y) << ")\n";
-			//debugTxt1.SetText(ssDebug.str());
+			pos = cpBodyGetPos(ballBody);
+			vel = cpBodyGetVel(ballBody);
+			ballSprite.SetPosition(pos.x, pos.y);
 
-			//cpSpaceStep(space, timeStep);
-			//time += timeStep;
+			printf(
+				"Time is %5.2f. ballBody is at (%5.2f, %5.2f). It's velocity is (%5.2f, %5.2f)\n",
+				time, pos.x, pos.y, vel.x, vel.y
+			);
+			std::stringstream ssDebug;
+			ssDebug << "Time: " << (int)time << "\n" <<
+				"ball=(" << (int)(pos.x) << "," << (int)(pos.y) << ")\n" <<
+				"velocity=("<< (int)(pos.x) << "," << (int)(pos.y) << ")\n";
+			debugTxt1.SetText(ssDebug.str());
 
-//			  }
+			cpSpaceStep(space, timeStep);
+			time += timeStep;
  
 		}
 
@@ -159,8 +160,9 @@ int main(int argc, int argv[]) {
         // Draw the background, paddles and ball sprites
         App.Draw(Background);
         App.Draw(Ball);
+		App.Draw(ballSprite);
 		App.Draw(debugTxt1);
-//		App.Draw(borderBottom);
+		App.Draw(borderBottom);
 
         // If the game is over, display the end message
         if (!IsPlaying)
@@ -172,9 +174,9 @@ int main(int argc, int argv[]) {
 
 
 	// Clean up our objects and exit!
-	//cpShapeFree(ballShape);
-	//cpBodyFree(ballBody);
-	//cpShapeFree(ground);
+	cpShapeFree(ballShape);
+	cpBodyFree(ballBody);      //Causing a crash for some reason = memory error
+	cpShapeFree(ground);
 	cpSpaceFree(space);
 
 
