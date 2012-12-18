@@ -6,7 +6,7 @@
 
 #ifndef CONFIG_H
 #define CONFIG_H
-
+//#include <chipmunk\chipmunk.h>
 
 #define TITLE "Space Ripoff"
 
@@ -19,9 +19,11 @@
 #define WORLD_DIMENSION_X = 1000 // kilometers
 #define WORLD_DIMENSION_Y = 1000 // kilometers
 
-#define GRAVITY 0.0
+#define GRAVITY 10.0
 const double PI = 3.14159265359;
-cpFloat timeStep = 1.0/60.0;
+const float timeStep = 1.0/60.0;
+
+const enum image_list { IMG_NONE, IMG_SPACE_BG, IMG_BALL };
 
 
 #endif // !CONFIG_H

@@ -9,14 +9,13 @@
 #include <SFML\Graphics.hpp>
 #include <SFML\System.hpp>
 #include <string>
-
+#include "config.h"
 
 class Images
 {
 public:
 	Images(void);
 	~Images(void);
-	enum image_list {IMG_NONE, IMG_SPACE_BG, IMG_2};
 	image_list textureIds;
 
 	// Returns a pointer to the sprite loaded in _sprites, requires sprite_list enum ID. 

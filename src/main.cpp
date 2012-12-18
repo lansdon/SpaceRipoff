@@ -28,7 +28,7 @@ int main(int argc, int argv[]) {
 	****************************************************************************/
 
 	// cpVect is a 2D vector and cpv() is a shortcut for initializing them.
-	cpVect gravity = cpv(0, 10);
+	cpVect gravity = cpv(0, GRAVITY);
   
 	// Create an empty space.
 	cpSpace *space = cpSpaceNew();
