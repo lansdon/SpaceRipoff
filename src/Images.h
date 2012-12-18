@@ -11,6 +11,7 @@
 #include <string>
 #include "config.h"
 
+
 class Images
 {
 public:
@@ -19,13 +20,14 @@ public:
 	image_list textureIds;
 
 	// Returns a pointer to the sprite loaded in _sprites, requires sprite_list enum ID. 
-	sf::Image *getImage(image_list id);
+	sf::Image *getImageById(image_list id) { return _images[id]; }
 
 	// Loads sprites from vector of files mysprite.jpg (function assumes /datas/) -- set bypassHardcodedList false to load hardcoded list of sprites
 	int loadImages(std::vector<std::string> *fileLocations = NULL, bool bypassHardcodedList = true);
-	sf::Image loadImage(std::string fileLoc);
+	sf::Image *loadImage(std::string fileLoc);
+
 private:
-	std::vector<sf::Image> _images;
+	std::vector<sf::Image *> _images;
 
 
 };

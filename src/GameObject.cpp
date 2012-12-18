@@ -1,18 +1,77 @@
 #include "GameObject.h"
 
 
-GameObject::GameObject(void)
+GameObject::GameObject(cpSpace *space, sf::Image *img)
 {
+	cpFloat radius = 10;
+	cpFloat mass = 1;
+  
+	// The moment of inertia is like mass for rotation
+	// Use the cpMomentFor*() functions to help you approximate it.
+	cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
+  
+	// The cpSpaceAdd*() functions return the thing that you are adding.
+	// It's convenient to create and add an object in one line.
+	_body = cpSpaceAddBody(space, cpBodyNew(mass, moment));
+  
+	// Now we create the collision shape for the ball.
+	// You can create multiple collision shapes that point to the same body.
+	// They will all be attached to the body and move around to follow it.
+	_cpShapes.push_back(cpSpaceAddShape(space, cpCircleShapeNew(_body, radius, cpvzero)));
+	cpShapeSetFriction(_cpShapes[0], 0.7);
+	cpBodySetPos(_body, cpv(10, 15));
+	cpBodySetUserData(_body, this);
+
+	// Sprite / Geometry
+	_sfShape = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
+	setSpriteImage(img);
+	_sprite.Resize(radius, radius);
+
+	_circleSprite = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
+
+//	setSpriteImage(*img);
 }
 
 
 GameObject::~GameObject(void)
 {
+	// Clean up our objects and exit!
+	for(std::vector<cpShape*>::iterator it = _cpShapes.begin(); it != _cpShapes.end(); ++it) {
+		cpShapeFree(*it);
+	}
+//	cpBodyFree(ballBody);      //Causing a crash for some reason = memory error
+
 }
 
 // update object state
 void GameObject::update() {
+	cpVect pos = cpBodyGetPos(_body);
+	cpVect vel = cpBodyGetVel(_body);
+	_sprite.SetPosition((float)pos.x, (float)pos.y);
+	float angle = 180.f/PI * _body->a;
+	_sprite.SetRotation(angle); 
+	_circleSprite.SetPosition((float)pos.x, (float)pos.y);
+	std::stringstream ss;
+	ss << "Angle=" << (int)angle;
+//	sf::String debug(ss.str());
+//	debug.SetPosition(10, 10);
+	std::cout << ss.str() << std::endl;
+}
 
-//	_sprite.SetPosition(
+// Load image into sprite
+void GameObject::setSpriteImage(sf::Image *img) {
+	_sprite.SetImage(*img);
+}
 
+sf::Sprite *GameObject::getSprite() {
+//	if(_sprite.GetImage()) 
+		return &_sprite;
+//	else return NULL;
+//	return circleSprite;
+}
+sf::Shape *GameObject::getShape() {
+//	if(_sprite.GetImage()) 
+//		return &_sprite;
+//	else return NULL;
+	return &_circleSprite;
 }

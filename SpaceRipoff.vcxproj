@@ -67,11 +67,13 @@
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\debug.h" />
     <ClInclude Include="src\GameObject.h" />
+    <ClInclude Include="src\goShip.h" />
     <ClInclude Include="src\Images.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CollisionHandler.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\goShip.cpp" />
     <ClCompile Include="src\Images.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pong.cpp" />

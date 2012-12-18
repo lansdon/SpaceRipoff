@@ -1,31 +1,49 @@
 
 /*
 	GameObject Base Class
+
+	Derived classes:(TBD) circle? line? 
 	todo - everything
 */
 #pragma once
+// SFML / Chipmunk
 #include <SFML\Graphics.hpp>
 #include <SFML\System.hpp>
+
+// STL
+#include <sstream>
+#include <iostream>
+
+// Space Junk
 #include "config.h"
 #include "chipmunk\chipmunk.h"
+#include "Images.h"
 
 
 
 class GameObject
 {
 public:
-	GameObject(void);
+	GameObject(cpSpace *space, sf::Image *img);
 	~GameObject(void);
 
 	void update(); // update object state
 
+	void setSpriteImage(sf::Image *img);			// Load image into sprite
+	sf::Sprite *getSprite();
+	sf::Shape *getShape();   // = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
 
 	// To do - Chipmunk Wrapper
+	cpVect getPos() { return cpBodyGetPos(_body); };
+	cpVect getVel() { return cpBodyGetVel(_body); };
 
-private:
-	sf::Sprite _sprite;		// Sprite 
-	cpBody *_body;			// Chipmunk body = cpSpaceAddBody(space, cpBodyNew(mass, moment));
-	std::vector<cpShape*> _shapes; // chipmunk shapes = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
+protected:
+	sf::Sprite _sprite;				// Sprite 
+	cpBody *_body;					// Chipmunk body = cpSpaceAddBody(space, cpBodyNew(mass, moment));
+	std::vector<cpShape*> _cpShapes; // chipmunk shapes = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
+	cpSpace *_space;				// Reference to cp Space
+	sf::Shape _sfShape;				// optional draw method using geometry instead of sprites. (should be derived class!)
+	sf::Shape _circleSprite; // = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
 
 };
   
