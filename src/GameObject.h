@@ -18,7 +18,7 @@
 #include "config.h"
 #include "chipmunk\chipmunk.h"
 #include "Images.h"
-
+#include "Utility.h"
 
 
 class GameObject
@@ -36,6 +36,7 @@ public:
 	// To do - Chipmunk Wrapper
 	cpVect getPos() { return cpBodyGetPos(_body); };
 	cpVect getVel() { return cpBodyGetVel(_body); };
+	cpVect getForce() { return _body->f; };
 
 protected:
 	sf::Sprite _sprite;				// Sprite 

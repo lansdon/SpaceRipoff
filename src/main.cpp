@@ -95,7 +95,7 @@ int main(int argc, int argv[]) {
 	sf::String debugTxt1;
     debugTxt1.SetFont(Cheeseburger);
 	debugTxt1.SetSize(18.f);
-    debugTxt1.Move(10.f, 500.f);
+    debugTxt1.Move(10.f, 450.f);
     debugTxt1.SetColor(sf::Color(100, 100, 250));
 	debugTxt1.SetText("Super sweet Space Ripoff");
 
@@ -122,19 +122,19 @@ int main(int argc, int argv[]) {
 			if(Event.Type == sf::Event::KeyPressed) {
 				if(Event.Key.Code == sf::Key::Right) {
 					goShip.pulseRotateCW();
-					debugMove.SetText("RIGHT ARROW");
+					debugMove.SetText("RIGHT");
 				}
 				else if(Event.Key.Code == sf::Key::Left) {
 					goShip.pulseRotateCCW();
-					debugMove.SetText("LEFT ARROW");
+					debugMove.SetText("LEFT");
 				}
 				else if(Event.Key.Code == sf::Key::Up) {
 					goShip.pulseThrustForward();
-					debugMove.SetText("Up ARROW");
+					debugMove.SetText("UP");
 				}
 				else if(Event.Key.Code == sf::Key::Down) {
 					goShip.pulseThrustBack();
-					debugMove.SetText("DOWN ARROW");
+					debugMove.SetText("DOWN");
 				}
 			}
         }
@@ -154,8 +154,11 @@ int main(int argc, int argv[]) {
 			ssDebug <<	"Super sweet Space Ripoff\n" <<
 				"FPS: " << (int)Framerate << "\n" <<
 						"Time: " << (int)Clock.GetElapsedTime() << "\n" <<
-						"ball=(" << (int)(pos.x) << "," << (int)(pos.y) << ")\n" <<
-						"velocity=("<< (int)(pos.x) << "," << (int)(pos.y) << ")\n";
+						"Pos=(" << (int)(pos.x) << "," << (int)(pos.y) << ")\n" <<
+						"velocity=("<< (int)(vel.x) << "," << (int)(vel.y) << ")\n" <<
+						"thrust=("<< (int)(goShip.getThrusterMag()) << ")\n" <<
+						"Force=(" << (int)goShip.getForce().x << "," << (int)goShip.getForce().y << ")\n";
+
 			debugTxt1.SetText(ssDebug.str());
 
 			while( accumulator >= timeStep ) {

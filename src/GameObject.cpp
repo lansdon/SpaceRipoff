@@ -45,16 +45,21 @@ GameObject::~GameObject(void)
 
 // update object state
 void GameObject::update() {
-	cpVect pos = cpBodyGetPos(_body);
-	cpVect vel = cpBodyGetVel(_body);
-	_sprite.SetPosition((float)pos.x, (float)pos.y);
+//	_body->f = cpvzero;						// Clear forces
+
+	// Update sprite position to match physics body
+	_sprite.SetPosition((float)cpBodyGetPos(_body).x, (float)cpBodyGetPos(_body).y);
+
+	// Update sprite rotation to match physics body
 	float angle = 180.f/PI * _body->a;
-	_sprite.SetRotation(angle); 
-	_circleSprite.SetPosition((float)pos.x, (float)pos.y);
-	std::stringstream ss;
+	if(angle > 360) angle = (int)angle % 360;	// 1-360
+	if(angle < 0) angle = (int)angle % -360;	// 1-360
+	_sprite.SetRotation(Utility::CP_to_SF_ANGLED(angle)); 
+
+
+	// Debug
+	std::stringstream ss;		// make private var ?
 	ss << "Angle=" << (int)angle;
-//	sf::String debug(ss.str());
-//	debug.SetPosition(10, 10);
 	std::cout << ss.str() << std::endl;
 }
 

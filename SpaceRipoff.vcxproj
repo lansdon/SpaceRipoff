@@ -69,6 +69,7 @@
     <ClInclude Include="src\GameObject.h" />
     <ClInclude Include="src\goShip.h" />
     <ClInclude Include="src\Images.h" />
+    <ClInclude Include="src\Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CollisionHandler.cpp" />
@@ -77,6 +78,7 @@
     <ClCompile Include="src\Images.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pong.cpp" />
+    <ClCompile Include="src\Utility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,8 +1,12 @@
 #include "goShip.h"
-
+#include "chipmunk\chipmunk.h"
 
 goShip::goShip(cpSpace *space, sf::Image *img) : GameObject(space, img)
 {
+	_activeThruster = false;
+	_thrusterMagnitude = 0.f;
+	_THRUSTER_INCREMENT = 1.0f;	// arbitrary value that forward/reverse thrusters add/decrease thrusterMagnitude by.
+	_ROTATION_INCREMENT = 0.2f;	// arbitrary value that forward/reverse thrusters add/decrease thrusterMagnitude by.
 
 	cpFloat radius = 60;
 	cpFloat mass = 10;
@@ -11,16 +15,11 @@ goShip::goShip(cpSpace *space, sf::Image *img) : GameObject(space, img)
 	// Use the cpMomentFor*() functions to help you approximate it.
 	cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
   
-	// The cpSpaceAdd*() functions return the thing that you are adding.
-	//It's convenient to create and add an object in one line.
 	 cpShapeFree(_cpShapes[0]);
 	 cpBodyFree(_body);
 	_body = cpSpaceAddBody(space, cpBodyNew(mass, moment));
 	cpBodySetPos(_body, cpv(400, 300));
   
-	// Now we create the collision shape for the ball.
-	// You can create multiple collision shapes that point to the same body.
-	// They will all be attached to the body and move around to follow it.
 	_cpShapes.pop_back();
 	_cpShapes.push_back(cpSpaceAddShape(space, cpCircleShapeNew(_body, radius, cpvzero)));
 	
@@ -31,11 +30,14 @@ goShip::goShip(cpSpace *space, sf::Image *img) : GameObject(space, img)
 	// Sprite / Geometry
 //	_sfShape = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
 	setSpriteImage(img);
-	_sprite.Resize(radius*2, radius*2);
-	_sprite.SetCenter(radius, radius);
+	_sprite.Resize(radius, radius);
+//	_sprite.SetCenter(radius/2, radius/2);
 
 //	_circleSprite = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
 //
+
+
+
 }
 
 
@@ -47,32 +49,65 @@ goShip::~goShip(void)
 
 // Movement
 void goShip::pulseRotateCW(float percentAdj) {
-// cpFloat cpBodyGetTorque(const cpBody *body)
-	_body->a += .2 * percentAdj;
-	
-	//	cpVect direction = cpvforangle(cpvtoangle(cpvrperp(cpBodyGetVel(_body)))) * percentAdj;
-//	cpBodyApplyImpulse(_body, direction, cpvzero); //– Add the impulse j to body at a relative offset r from the center of gravity.
-//	cpBodyApplyForce(_body, cpvzero, cpvzero);
-//	_body->rot = direction;
+	_activeThruster = true;
+	cpBodySetAngle(_body, _body->a - _ROTATION_INCREMENT * percentAdj);
+	calculateForces();
 }
 
 void goShip::pulseRotateCCW(float percentAdj) {
-	_body->a += -.5 * percentAdj;
-
-//	cpVect direction = cpvforangle(cpvtoangle(cpvperp(cpBodyGetVel(_body)))) * percentAdj;
-//	_body->rot = direction;
-
-//	cpBodyApplyImpulse(_body, direction, cpvzero); //– Add the impulse j to body at a relative offset r from the center of gravity.
+	_activeThruster = true;
+	cpBodySetAngle(_body, _body->a + _ROTATION_INCREMENT * percentAdj);
+	calculateForces();
 }
 
 void goShip::pulseThrustForward(float percentAdj) {
-	cpVect direction = cpvnormalize(_body->v) * percentAdj; //-cpvforangle(cpvtoangle(cpBodyGetVel(_body))) * 100 * percentAdj;
-	_body->f = _body->f + direction;
-//	cpBodyApplyImpulse(_body, direction, cpvzero); //– Add the impulse j to body at a relative offset r from the center of gravity.
+	_activeThruster = true;
+	_thrusterMagnitude += _THRUSTER_INCREMENT * percentAdj;
+	calculateForces();
+//	cpVect forceVector = cpvnormalize_safe(cpvforangle(_body->a));
+//	_body->f = _body->f + forceVector;
 }
 
 void goShip::pulseThrustBack(float percentAdj) {
-	cpVect direction = -cpvnormalize(_body->v) * percentAdj;
-	_body->f = _body->f + direction;
-//	cpBodyApplyImpulse(_body, direction, cpvzero); //– Add the impulse j to body at a relative offset r from the center of gravity.
+	_activeThruster = true;
+	_thrusterMagnitude -= _THRUSTER_INCREMENT * percentAdj;
+	calculateForces();
+//	cpVect forceVector = -cpvnormalize_safe(cpvforangle(_body->a));
+//	_body->f = _body->f + forceVector;
 }
+
+void goShip::calculateForces() {
+	cpVect direction = cpvnormalize_safe(cpvforangle(_body->a));  // directional unit vector of ship
+	cpVect forceVector = direction * _thrusterMagnitude;
+	forceVector.y *= -1;		// reverse y axis to match sfml coordinates
+	_body->f = forceVector;
+}
+
+
+
+/*
+
+(TS) Pineapple Chunk (Indica 80/20) - 1/8oz= $47.00 1/4oz= $94.00, 1/2oz= $156.00, 1oz= $312.00   22-25%THC- 1.1% CBD New!
+(TS) Trainwreck (Sativa 100) - 1/8oz =$47.00, 1/4oz=$94.00, 1/2oz=$156.00, 1oz=$312.00  New! 
+
+	Norther lights
+(TS) Northern Lights (Indica 90/10) - 1/8oz =$47.00, 1/4oz=$94.00, 1/2oz= $156.00, 1oz= $312.00   New! 
+
+(TS) Afghan #1 (Indica 100) -1/8oz =$47.00, 1/4oz =$94.00, 1/2oz =$142.00, 1oz =$262.00   Low half left Limited 
+(TS) Island Sweet Skunk (Sativa 75/25) - 1/8oz =$47.00, 1/4oz=$94.00, 1/2oz=$166.00, 1oz=$312.00 Very Low 
+
+4 * 47 = $188
+
+suckers x 2   ?    $18.00 OUT
+
+dragon drops 1oz bottle = $45
+
+$233 TOTAL
+
+total: 251
+
+1:30
+blue ford explorer
+
+
+*/
