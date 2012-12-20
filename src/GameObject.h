@@ -19,6 +19,8 @@
 #include "chipmunk\chipmunk.h"
 #include "Images.h"
 #include "Utility.h"
+#include "debug.h"
+
 
 
 class GameObject
@@ -33,6 +35,9 @@ public:
 	sf::Sprite *getSprite();
 	sf::Shape *getShape();   // = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
 
+	// 
+
+
 	// To do - Chipmunk Wrapper
 	cpVect getPos() { return cpBodyGetPos(_body); };
 	cpVect getVel() { return cpBodyGetVel(_body); };
@@ -45,6 +50,10 @@ protected:
 	cpSpace *_space;				// Reference to cp Space
 	sf::Shape _sfShape;				// optional draw method using geometry instead of sprites. (should be derived class!)
 	sf::Shape _circleSprite; // = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
+
+
+	// debug
+	std::stringstream _debug;		// make private var ?
 
 };
   

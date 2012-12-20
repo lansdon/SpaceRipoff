@@ -30,8 +30,8 @@ goShip::goShip(cpSpace *space, sf::Image *img) : GameObject(space, img)
 	// Sprite / Geometry
 //	_sfShape = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
 	setSpriteImage(img);
-	_sprite.Resize(radius, radius);
-//	_sprite.SetCenter(radius/2, radius/2);
+	_sprite.Resize(radius*2, radius*2);
+	_sprite.SetCenter(radius*5, radius*4);
 
 //	_circleSprite = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
 //
@@ -85,29 +85,3 @@ void goShip::calculateForces() {
 
 
 
-/*
-
-(TS) Pineapple Chunk (Indica 80/20) - 1/8oz= $47.00 1/4oz= $94.00, 1/2oz= $156.00, 1oz= $312.00   22-25%THC- 1.1% CBD New!
-(TS) Trainwreck (Sativa 100) - 1/8oz =$47.00, 1/4oz=$94.00, 1/2oz=$156.00, 1oz=$312.00  New! 
-
-	Norther lights
-(TS) Northern Lights (Indica 90/10) - 1/8oz =$47.00, 1/4oz=$94.00, 1/2oz= $156.00, 1oz= $312.00   New! 
-
-(TS) Afghan #1 (Indica 100) -1/8oz =$47.00, 1/4oz =$94.00, 1/2oz =$142.00, 1oz =$262.00   Low half left Limited 
-(TS) Island Sweet Skunk (Sativa 75/25) - 1/8oz =$47.00, 1/4oz=$94.00, 1/2oz=$166.00, 1oz=$312.00 Very Low 
-
-4 * 47 = $188
-
-suckers x 2   ?    $18.00 OUT
-
-dragon drops 1oz bottle = $45
-
-$233 TOTAL
-
-total: 251
-
-1:30
-blue ford explorer
-
-
-*/

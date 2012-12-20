@@ -28,6 +28,7 @@ const float timeStep = 1.0f/60.0f;
 
 const enum image_list { IMG_NONE, IMG_SPACE_BG, IMG_BALL, IMG_SPACESHIP };
 
+static bool DO_DEBUG = 1;
 
 #endif // !CONFIG_H
 

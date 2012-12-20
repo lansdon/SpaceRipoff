@@ -25,7 +25,7 @@ GameObject::GameObject(cpSpace *space, sf::Image *img)
 	// Sprite / Geometry
 	_sfShape = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
 	setSpriteImage(img);
-	_sprite.Resize(radius, radius);
+	_sprite.Resize(float(radius), float(radius));
 
 	_circleSprite = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
 
@@ -45,22 +45,24 @@ GameObject::~GameObject(void)
 
 // update object state
 void GameObject::update() {
-//	_body->f = cpvzero;						// Clear forces
+	//if(!_activeThruster)
+	//	_body->f = cpvzero;						// Clear forces
 
 	// Update sprite position to match physics body
 	_sprite.SetPosition((float)cpBodyGetPos(_body).x, (float)cpBodyGetPos(_body).y);
 
 	// Update sprite rotation to match physics body
-	float angle = 180.f/PI * _body->a;
+	float angle = Utility::RAD_to_DEG(_body->a);
 	if(angle > 360) angle = (int)angle % 360;	// 1-360
 	if(angle < 0) angle = (int)angle % -360;	// 1-360
 	_sprite.SetRotation(Utility::CP_to_SF_ANGLED(angle)); 
 
 
 	// Debug
-	std::stringstream ss;		// make private var ?
-	ss << "Angle=" << (int)angle;
-	std::cout << ss.str() << std::endl;
+	_debug.str("");		// make private var ?
+	_debug << "Angle=" << (int)angle << std::endl;
+//	DEBUG(_debug.str());
+//	std::cerr << _debug.str() << std::endl;
 }
 
 // Load image into sprite
@@ -74,6 +76,7 @@ sf::Sprite *GameObject::getSprite() {
 //	else return NULL;
 //	return circleSprite;
 }
+
 sf::Shape *GameObject::getShape() {
 //	if(_sprite.GetImage()) 
 //		return &_sprite;
