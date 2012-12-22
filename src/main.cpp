@@ -9,7 +9,7 @@
 
 // SFML + Chipmunk
 #include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
+//#include <SFML/Audio.hpp>
 #include <chipmunk/chipmunk.h>
 
 // STL
@@ -21,6 +21,7 @@
 #include "debug.h"
 #include "GameObject.h"
 #include "goShip.h"
+#include "GameObjectManager.h"
 
 
 
@@ -28,16 +29,23 @@
 int main(int argc, int argv[]) {
 	std::cout << "SPACE RIPOFF GAME OF EPIC PROPORTIONS!!\n";
 
+	Settings *settings = new Settings();		// ABSOLUTELY CRITICAL TO INITIALIZE THIS STRUCT - IT IS PROPOGATED EVERYWHERE!
+	settings->InitializeGame(cpSpaceNew(),
+							new sf::RenderWindow(sf::VideoMode(START_RESOLUTION_X, START_RESOLUTION_Y, START_PIXEL_DEPTH), TITLE),
+							new Images(),
+							new sf::Clock()
+							);
+	GameObjectManager goManager();// = GameObjectManager::getInstance();
+
 	// SFML Setup ********************************************
-    sf::RenderWindow App(sf::VideoMode(START_RESOLUTION_X, START_RESOLUTION_Y, START_PIXEL_DEPTH), TITLE);
-	App.UseVerticalSync(false);
-	sf::Clock Clock;		// Master game clock -- running time
+//    sf::RenderWindow App(sf::VideoMode(START_RESOLUTION_X, START_RESOLUTION_Y, START_PIXEL_DEPTH), TITLE);
+	settings->app->UseVerticalSync(false);
+//	sf::Clock Clock;		// Master game clock -- running time
 	float accumulator = 0; 	// tracks physics engine timestep
     float Framerate = 0; 
 	sf::String debugMove("");
 	debugMove.SetPosition(700, 550);
 	// ******************************************************
-	Images images;
 
 
 	/****************************************************************************
@@ -46,8 +54,8 @@ int main(int argc, int argv[]) {
 	cpFloat time = 0; 
  
 	// Create an empty space.
-	cpSpace *space = cpSpaceNew();
-	cpSpaceSetGravity(space, gravity);
+	cpSpace *space = settings->space;		// redundant reference for main.
+	cpSpaceSetGravity(settings->space, gravity);
   
 	// Screen Borders - Add static line segment shapes
 	sf::Shape borderBottom = sf::Shape::Line(0, 600, 800, 600, 2, sf::Color::Red);
@@ -56,7 +64,7 @@ int main(int argc, int argv[]) {
 	sf::Shape borderRight = sf::Shape::Line(800, 0, 800, 600, 2, sf::Color::Red);
 
 	cpShape *cps_brdrBot = cpSegmentShapeNew(space->staticBody, cpv(0, 600), cpv(800, 600), 0);
-	cpShape *cps_brdrTop = cpSegmentShapeNew(space->staticBody, cpv(0, 0), cpv(800, 0), 0);
+	cpShape *cps_brdrTop = cpSegmentShapeNew(space->staticBody, cpv(0, 0), cpv(800, 0), 0);					// Todo - Move this to object manager
 	cpShape *cps_brdrL = cpSegmentShapeNew(space->staticBody, cpv(0, 0), cpv(0, 600), 0);
 	cpShape *cps_brdrR = cpSegmentShapeNew(space->staticBody, cpv(800, 0), cpv(800, 600), 0);
 
@@ -67,8 +75,8 @@ int main(int argc, int argv[]) {
 	cpSpaceAddShape(space, cps_brdrR);
      
 	// GAME OBJECT TEST
-	GameObject goBall(space, images.getImageById(image_list::IMG_BALL));
-	goShip goShip(space, images.getImageById(image_list::IMG_SPACESHIP));
+//	GameObject goBall(settings);
+	goShip goShip(settings); //, settings->images.getImageById(image_list::IMG_SPACESHIP));
 
  /****************************************************************************
 	END CHIPMUNK
@@ -123,10 +131,10 @@ int main(int argc, int argv[]) {
 	bool shipThrusterActivated = false;
 	bool IsPlaying = true;
 
-    while (App.IsOpened()) {
+    while (settings->app->IsOpened()) {
 		shipThrusterActivated = false;
-		Framerate = 1.f / App.GetFrameTime();
-		accumulator += App.GetFrameTime();
+		Framerate = 1.f / settings->app->GetFrameTime();
+		accumulator += settings->app->GetFrameTime();
 
 		// FPS Display (refresh every sec)
 		if(++fpsCount >= 60) {
@@ -138,12 +146,12 @@ int main(int argc, int argv[]) {
 
         // Handle events
         sf::Event Event;
-        while (App.GetEvent(Event)) {
+        while (settings->app->GetEvent(Event)) {
 			debugMove.SetText("");
             // Window closed or escape key pressed : exit
             if ((Event.Type == sf::Event::Closed) || 
                ((Event.Type == sf::Event::KeyPressed) && (Event.Key.Code == sf::Key::Escape))) {
-				App.Close();
+				settings->app->Close();
                 break;
             }
 			if(Event.Type == sf::Event::KeyPressed) {
@@ -172,6 +180,9 @@ int main(int argc, int argv[]) {
 				else if(Event.Key.Code == sf::Key::F12) {
 					DO_DEBUG = !DO_DEBUG;
 				}
+				else if(Event.Key.Code == sf::Key::Space) {
+					goShip.fireBullet();
+				}
 			}
         }
 
@@ -191,7 +202,7 @@ int main(int argc, int argv[]) {
 			if(DO_DEBUG) {
 				ssDebug.str("");
 				ssDebug <<	"Super sweet Space Ripoff\n" <<
-							"Time: " << (int)Clock.GetElapsedTime() << "\n" <<
+//					"Time: " << (int)(settings->masterClock.GetElapsedTime()) << "\n" <<
 							"Pos=(" << (int)(goShip.getPos().x) << "," << (int)(goShip.getPos().y) << ")\n" <<
 							"velocity=("<< (int)(goShip.getVel().x) << "," << (int)(goShip.getVel().y) << ")\n" <<
 							"thrust=("<< (int)(goShip.getThrusterMag()) << ")\n" <<
@@ -210,25 +221,25 @@ int main(int argc, int argv[]) {
 
 //		// DRAW *******************************************************************
 //        // Clear the window
-        App.Clear();
+        settings->app->Clear();
 //
 //        // Draw the background, paddles and ball sprites
 //        App.Draw(Background);
 //		if(goShip.getSprite())
-			App.Draw(*goShip.getSprite());
+			settings->app->Draw(*goShip.getSprite());
 //		if(goBall.getSprite())
 //			App.Draw(*goBall.getSprite());
 ////		App.Draw(*goBall.getShape());
 		
-		if(DO_DEBUG) App.Draw(debugTxt1);
+		if(DO_DEBUG) settings->app->Draw(debugTxt1);
 		
-		App.Draw(controlsTxt);
-		App.Draw(fpsTxt);
+		settings->app->Draw(controlsTxt);
+		settings->app->Draw(fpsTxt);
 //		App.Draw(borderBottom);
 //		App.Draw(borderTop);
 //		App.Draw(borderLeft);
 //		App.Draw(borderRight);
-		App.Draw(debugMove);
+		settings->app->Draw(debugMove);
 //
 //
 //        // If the game is over, display the end message
@@ -236,7 +247,7 @@ int main(int argc, int argv[]) {
 //            App.Draw(debugTxt1);
 //
 //        // Display things on screen
-        App.Display();
+        settings->app->Display();
 //		// END DRAW ****************************************************************
 
 

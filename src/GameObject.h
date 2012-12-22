@@ -17,16 +17,17 @@
 // Space Junk
 #include "config.h"
 #include "chipmunk\chipmunk.h"
-#include "Images.h"
+//#include "Images.h"
 #include "Utility.h"
 #include "debug.h"
-
+#include "Settings.h"
 
 
 class GameObject
 {
 public:
-	GameObject(cpSpace *space, sf::Image *img);
+
+	GameObject(Settings *settings_ptr, sf::Image *img = NULL);
 	~GameObject(void);
 
 	void update(); // update object state
@@ -42,8 +43,10 @@ public:
 	cpVect getPos() { return cpBodyGetPos(_body); };
 	cpVect getVel() { return cpBodyGetVel(_body); };
 	cpVect getForce() { return _body->f; };
+	cpFloat getAngle() { return _body->a; };
 
 protected:
+	Settings *settings;
 	sf::Sprite _sprite;				// Sprite 
 	cpBody *_body;					// Chipmunk body = cpSpaceAddBody(space, cpBodyNew(mass, moment));
 	std::vector<cpShape*> _cpShapes; // chipmunk shapes = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));

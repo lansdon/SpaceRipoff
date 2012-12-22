@@ -1,7 +1,8 @@
 #include "goShip.h"
 #include "chipmunk\chipmunk.h"
 
-goShip::goShip(cpSpace *space, sf::Image *img) : GameObject(space, img)
+goShip::goShip(Settings *settings_ptr, sf::Image *img) : 
+	GameObject(settings_ptr, img)
 {
 	_activeThruster = false;
 	_thrusterMagnitude = 0.f;
@@ -12,31 +13,25 @@ goShip::goShip(cpSpace *space, sf::Image *img) : GameObject(space, img)
 	cpFloat mass = 10;
   
 	// The moment of inertia is like mass for rotation
-	// Use the cpMomentFor*() functions to help you approximate it.
+	// Use the cpMomentFor*() functions to help you approximate it.//
 	cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
   
 	 cpShapeFree(_cpShapes[0]);
 	 cpBodyFree(_body);
-	_body = cpSpaceAddBody(space, cpBodyNew(mass, moment));
+	_body = cpSpaceAddBody(_space, cpBodyNew(mass, moment));
 	cpBodySetPos(_body, cpv(400, 300));
   
 	_cpShapes.pop_back();
-	_cpShapes.push_back(cpSpaceAddShape(space, cpCircleShapeNew(_body, radius, cpvzero)));
+	_cpShapes.push_back(cpSpaceAddShape(settings->space, cpCircleShapeNew(_body, radius, cpvzero)));
 	
 	cpShapeSetFriction(_cpShapes[0], 0.7);
 //	cpBodySetPos(_body, cpv(10, 15));
 //	cpBodySetUserData(_body, this);
 
 	// Sprite / Geometry
-//	_sfShape = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
-	setSpriteImage(img);
+	setSpriteImage(settings->images->getImageById(settings->images->IMG_SPACESHIP));
 	_sprite.Resize(radius*2, radius*2);
 	_sprite.SetCenter(radius*5, radius*4);
-
-//	_circleSprite = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
-//
-
-
 
 }
 
@@ -64,16 +59,12 @@ void goShip::pulseThrustForward(float percentAdj) {
 	_activeThruster = true;
 	_thrusterMagnitude += _THRUSTER_INCREMENT * percentAdj;
 	calculateForces();
-//	cpVect forceVector = cpvnormalize_safe(cpvforangle(_body->a));
-//	_body->f = _body->f + forceVector;
 }
 
 void goShip::pulseThrustBack(float percentAdj) {
 	_activeThruster = true;
 	_thrusterMagnitude -= _THRUSTER_INCREMENT * percentAdj;
 	calculateForces();
-//	cpVect forceVector = -cpvnormalize_safe(cpvforangle(_body->a));
-//	_body->f = _body->f + forceVector;
 }
 
 void goShip::calculateForces() {
@@ -85,3 +76,10 @@ void goShip::calculateForces() {
 
 
 
+////////////////    G-G-G-G-GUNS!!!!  ///////////////////////////////////////////
+
+void goShip::fireBullet() {
+
+	goBullet *pewpew = new goBullet(settings, NULL, this);
+
+}

@@ -1,10 +1,14 @@
 #pragma once
 #include "gameobject.h"
+#include "goBullet.h"
+
+
+
 class goShip :
 	public GameObject
 {
 public:
-	goShip(cpSpace *space, sf::Image *img);
+	goShip(Settings *settings_ptr, sf::Image *img = NULL);
 	~goShip(void);
 
 	// Movement
@@ -14,6 +18,9 @@ public:
 	void pulseThrustBack(float percentAdj = 1);
 	float getThrusterMag() { return _thrusterMagnitude; };
 	void setThrusterActive(bool bActive) { _activeThruster = bActive; if(!bActive) _thrusterMagnitude=0.0f; calculateForces(); }
+
+	// Guns
+	void fireBullet();
 
 private:
 	float _THRUSTER_INCREMENT;	// arbitrary value that forward/reverse thrusters add/decrease thrusterMagnitude by.

@@ -9,15 +9,16 @@
 #include <SFML\Graphics.hpp>
 #include <SFML\System.hpp>
 #include <string>
-#include "config.h"
+//#include "Settings.h"
 
 
 class Images
 {
 public:
-	Images(void);
+	Images();
 	~Images(void);
-	image_list textureIds;
+
+	enum image_list { IMG_NONE, IMG_SPACE_BG, IMG_BALL, IMG_SPACESHIP } imageList;
 
 	// Returns a pointer to the sprite loaded in _sprites, requires sprite_list enum ID. 
 	sf::Image *getImageById(image_list id) { return _images[id]; }
@@ -28,7 +29,6 @@ public:
 
 private:
 	std::vector<sf::Image *> _images;
-
 
 };
 

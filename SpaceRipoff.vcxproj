@@ -67,16 +67,22 @@
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\debug.h" />
     <ClInclude Include="src\GameObject.h" />
+    <ClInclude Include="src\GameObjectManager.h" />
+    <ClInclude Include="src\goBullet.h" />
     <ClInclude Include="src\goShip.h" />
     <ClInclude Include="src\Images.h" />
+    <ClInclude Include="src\Settings.h" />
     <ClInclude Include="src\Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CollisionHandler.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\GameObjectManager.cpp" />
+    <ClCompile Include="src\goBullet.cpp" />
     <ClCompile Include="src\goShip.cpp" />
     <ClCompile Include="src\Images.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\Utility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
