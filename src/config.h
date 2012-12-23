@@ -21,7 +21,7 @@
 
 //#define GRAVITY 10.0
 // cpVect is a 2D vector and cpv() is a shortcut for initializing them.
-const cpVect gravity = cpv(0.0f, 0.0f);
+const cpVect gravity = cpv(0.0f, 0.10f);
 
 const double PI = 3.14159265359;
 const float timeStep = 1.0f/60.0f;

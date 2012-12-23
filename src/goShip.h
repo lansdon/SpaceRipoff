@@ -8,7 +8,7 @@ class goShip :
 	public GameObject
 {
 public:
-	goShip(Settings *settings_ptr, sf::Image *img = NULL);
+	goShip(goConfig new_config);
 	~goShip(void);
 
 	// Movement

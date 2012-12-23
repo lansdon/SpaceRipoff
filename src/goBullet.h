@@ -4,7 +4,7 @@ class goBullet :
 	public GameObject
 {
 public:
-	goBullet(Settings *settings_ptr, sf::Image *img = NULL, GameObject *shooter = NULL);
+	goBullet(goConfig new_config);
 	~goBullet(void);
 
 	void setOwner(GameObject *shooter) { _owner = shooter; }

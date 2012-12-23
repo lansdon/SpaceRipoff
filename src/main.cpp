@@ -35,7 +35,7 @@ int main(int argc, int argv[]) {
 							new Images(),
 							new sf::Clock()
 							);
-	GameObjectManager goManager();// = GameObjectManager::getInstance();
+	GameObjectManager* goManager = GameObjectManager::getInstance(settings);// = GameObjectManager::getInstance();
 
 	// SFML Setup ********************************************
 //    sf::RenderWindow App(sf::VideoMode(START_RESOLUTION_X, START_RESOLUTION_Y, START_PIXEL_DEPTH), TITLE);
@@ -76,8 +76,13 @@ int main(int argc, int argv[]) {
      
 	// GAME OBJECT TEST
 //	GameObject goBall(settings);
-	goShip goShip(settings); //, settings->images.getImageById(image_list::IMG_SPACESHIP));
-
+//	goShip goShip(settings); //, settings->images.getImageById(image_list::IMG_SPACESHIP));
+//	goShip* testShip = static_cast<goShip*>(goManager->createObject(settings->OBJ_SHIP));
+	GameObject* goTemp = goManager->createObject(settings->OBJ_SHIP);
+	goShip* testShip = static_cast<goShip*>(goTemp);
+//	goBullet testBullet(settings);
+//	GameObject* goTemp2 = goManager->createBullet(settings->OBJ_BULLET, goTemp);
+//	goBullet* testShip2 = static_cast<goBullet*>(goTemp2);
  /****************************************************************************
 	END CHIPMUNK
   ****************************************************************************/
@@ -136,7 +141,7 @@ int main(int argc, int argv[]) {
 		Framerate = 1.f / settings->app->GetFrameTime();
 		accumulator += settings->app->GetFrameTime();
 
-		// FPS Display (refresh every sec)
+		// FPS Display (refresh every 60 frames)
 		if(++fpsCount >= 60) {
 			ssFps.str("");
 			ssFps << "FPS=" << (fpsSum / fpsCount);   // display average framerate per 60 frames
@@ -156,45 +161,52 @@ int main(int argc, int argv[]) {
             }
 			if(Event.Type == sf::Event::KeyPressed) {
 				if(Event.Key.Code == sf::Key::Right) {
-					goShip.pulseRotateCW();
+					testShip->pulseRotateCW();
 					debugMove.SetText("RIGHT");
 				}
 				else if(Event.Key.Code == sf::Key::Left) {
-					goShip.pulseRotateCCW();
+					testShip->pulseRotateCCW();
 					debugMove.SetText("LEFT");
 				}
 				else if(Event.Key.Code == sf::Key::Up) {
-					goShip.pulseThrustForward();
+					testShip->pulseThrustForward();
 					shipThrusterActivated = true;
 					debugMove.SetText("UP");
 				}
 				else if(Event.Key.Code == sf::Key::Down) {
-					goShip.pulseThrustBack();
+					testShip->pulseThrustBack();
 					shipThrusterActivated = true;
 					debugMove.SetText("DOWN");
 				}
 				else if(Event.Key.Code == sf::Key::S) {
-					goShip.setThrusterActive(shipThrusterActivated = false);
+					testShip->setThrusterActive(shipThrusterActivated = false);
 					debugMove.SetText("S");
+				}
+				else if(Event.Key.Code == sf::Key::F11) {
+					GameObjectManager::getInstance(settings)->createBullet(settings->OBJ_BULLET, goTemp);
 				}
 				else if(Event.Key.Code == sf::Key::F12) {
 					DO_DEBUG = !DO_DEBUG;
 				}
 				else if(Event.Key.Code == sf::Key::Space) {
-					goShip.fireBullet();
+					testShip->fireBullet();
 				}
 			}
         }
 
         if (IsPlaying) {
-				// Toggle Active Ship Thrusters
-//			goShip.setThrusterActive(shipThrusterActivated);
+			// Toggle Active Ship Thrusters
+//			testShip->setThrusterActive(shipThrusterActivated);
 
-			goShip.update();
-//			goBall.update();
-//			pos = goShip.getPos();
-//			vel = goShip.getVel();
-//
+			// Update physics
+			while( accumulator >= timeStep ) {
+//				++timeStepCount;
+				cpSpaceStep(space, timeStep);
+				accumulator -= timeStep;
+			}
+
+			goManager->updateObjects();
+
 //			//printf(
 //			//	"Time is %5.2f. ballBody is at (%5.2f, %5.2f). It's velocity is (%5.2f, %5.2f)\n",
 //			//	time, pos.x, pos.y, vel.x, vel.y
@@ -203,49 +215,36 @@ int main(int argc, int argv[]) {
 				ssDebug.str("");
 				ssDebug <<	"Super sweet Space Ripoff\n" <<
 //					"Time: " << (int)(settings->masterClock.GetElapsedTime()) << "\n" <<
-							"Pos=(" << (int)(goShip.getPos().x) << "," << (int)(goShip.getPos().y) << ")\n" <<
-							"velocity=("<< (int)(goShip.getVel().x) << "," << (int)(goShip.getVel().y) << ")\n" <<
-							"thrust=("<< (int)(goShip.getThrusterMag()) << ")\n" <<
-							"Force=(" << (int)goShip.getForce().x << "," << (int)goShip.getForce().y << ")\n";
+							"Pos=(" << (int)(testShip->getPos().x) << "," << (int)(testShip->getPos().y) << ")\n" <<
+							"velocity=("<< (int)(testShip->getVel().x) << "," << (int)(testShip->getVel().y) << ")\n" <<
+							"thrust=("<< (int)(testShip->getThrusterMag()) << ")\n" <<
+							"Force=(" << (int)testShip->getForce().x << "," << (int)testShip->getForce().y << ")\n" <<
+							"ObjManagerTotal=("<< goManager->getObjTotal() << ")\n";
 				debugTxt1.SetText(ssDebug.str());
 			}
 
-			// Update physics
-			while( accumulator >= timeStep ) {
-//				++timeStepCount;
-				cpSpaceStep(space, timeStep);
-				accumulator -= timeStep;
-			}
  
 		}
 
 //		// DRAW *******************************************************************
 //        // Clear the window
         settings->app->Clear();
-//
-//        // Draw the background, paddles and ball sprites
-//        App.Draw(Background);
-//		if(goShip.getSprite())
-			settings->app->Draw(*goShip.getSprite());
-//		if(goBall.getSprite())
-//			App.Draw(*goBall.getSprite());
-////		App.Draw(*goBall.getShape());
+
+		goManager->drawObjects();
 		
 		if(DO_DEBUG) settings->app->Draw(debugTxt1);
 		
+		settings->app->Draw(borderBottom);
+		settings->app->Draw(borderTop);
+		settings->app->Draw(borderLeft);
+		settings->app->Draw(borderRight);
+
+
+		// TEXT
 		settings->app->Draw(controlsTxt);
 		settings->app->Draw(fpsTxt);
-//		App.Draw(borderBottom);
-//		App.Draw(borderTop);
-//		App.Draw(borderLeft);
-//		App.Draw(borderRight);
 		settings->app->Draw(debugMove);
-//
-//
-//        // If the game is over, display the end message
-//        if (!IsPlaying)
-//            App.Draw(debugTxt1);
-//
+
 //        // Display things on screen
         settings->app->Display();
 //		// END DRAW ****************************************************************
