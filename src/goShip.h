@@ -9,7 +9,7 @@ class goShip :
 {
 public:
 	goShip(goConfig new_config);
-	~goShip(void);
+	virtual ~goShip(void);
 
 	// Movement
 	void pulseRotateCW(float percentAdj = 1);

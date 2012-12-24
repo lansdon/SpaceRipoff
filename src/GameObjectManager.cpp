@@ -28,7 +28,7 @@ GameObject* GameObjectManager::createObject(Settings::object_type type) {
 			50.f,				// radius
 			10.0f,				// mass
 			Images::IMG_SPACESHIP,	// Image id
-			cpv(300, 400),		// position
+			cpv(400, 300),		// position
 			0.f,				// angle
 			cpvzero,			// velocity
 			cpvzero,			// force

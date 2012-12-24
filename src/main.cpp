@@ -216,6 +216,7 @@ int main(int argc, int argv[]) {
 				ssDebug <<	"Super sweet Space Ripoff\n" <<
 //					"Time: " << (int)(settings->masterClock.GetElapsedTime()) << "\n" <<
 							"Pos=(" << (int)(testShip->getPos().x) << "," << (int)(testShip->getPos().y) << ")\n" <<
+							"Center=(" << (int)(testShip->getSprite()->GetCenter().x) << "," << (int)(testShip->getSprite()->GetCenter().y) << ")\n" <<
 							"velocity=("<< (int)(testShip->getVel().x) << "," << (int)(testShip->getVel().y) << ")\n" <<
 							"thrust=("<< (int)(testShip->getThrusterMag()) << ")\n" <<
 							"Force=(" << (int)testShip->getForce().x << "," << (int)testShip->getForce().y << ")\n" <<

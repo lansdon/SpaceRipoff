@@ -10,33 +10,9 @@ goShip::goShip(goConfig new_config) :
 	_ROTATION_INCREMENT(0.2f)	// arbitrary value that forward/reverse thrusters add/decrease thrusterMagnitude by.
 
 {
+//	_sprite->Resize((float)new_config.radius, (float)new_config.radius);
+//	_sprite->SetCenter((float)new_config.radius/2, (float)new_config.radius/2);
 
-	cpFloat radius = 60.f;
-	cpFloat mass = 10.f;
-/*
-	configureObject(goConfig(
-		radius,					// radius
-		mass,					// mass
-		settings->images->IMG_BALL,	// Image id
-		cpv(400, 300),			// position
-		0.f,					// angle
-		cpvzero,				// velocity
-		cpvzero));				// force
-		
-
-  
-  	cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
-	cpBodySetMoment(_body, moment);
-	cpBodySetPos(_body, cpv(400, 300));
- 	
-
-	// Sprite / Geometry
-*/
-//	setSpriteImage(settings->images->getImageById(settings->images->IMG_SPACESHIP));
-	_sprite->Resize((float)radius*2, (float)radius*2);
-	_sprite->SetCenter((float)radius*5, (float)radius*4);
-
-	
 }
 
 
@@ -99,14 +75,5 @@ void goShip::fireBullet() {
 		cpvzero,			// force
 		settings,			// settings
 		this));			// owner/shooter
-
-//	GameObject* pewpew = GameObjectManager::getInstance(settings)->createObject(Settings::OBJ_SHIP);
-//	pewpew->setOwner(this);
-	
-	
-//	pewpew->setPos(getPos()*2);
-//	pewpew->setAngle(getAngle());
-
-//	_body->v = forceVector;
 
 }

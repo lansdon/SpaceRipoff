@@ -5,7 +5,7 @@ class goBullet :
 {
 public:
 	goBullet(goConfig new_config);
-	~goBullet(void);
+	virtual ~goBullet(void);
 
 	void setOwner(GameObject *shooter) { _owner = shooter; }
 

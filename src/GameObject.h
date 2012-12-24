@@ -41,7 +41,7 @@ class GameObject
 public:
 
 	GameObject(goConfig new_config);
-	~GameObject(void);
+	virtual ~GameObject(void);
 
 
 
