@@ -31,14 +31,15 @@ void GameObject::update() {
 
 	if(_sprite) {
 		// Update sprite position to match physics body
-//		_sprite->SetPosition((float)cpBodyGetPos(_body).x, (float)cpBodyGetPos(_body).y);
+		_sprite->SetPosition((float)cpBodyGetPos(_body).x, (float)cpBodyGetPos(_body).y);
+		_sfShape->SetPosition((float)cpBodyGetPos(_body).x, (float)cpBodyGetPos(_body).y);
 
 		// Update sprite rotation to match physics body
-//		float angle = Utility::RAD_to_DEG(_body->a);
-//		if(angle < 0) angle = (int)angle % 360;	// 1-360
-//		if(angle < 0) angle = (int)angle % -360;	// 1-360
-//		_sprite->SetRotation(Utility::CP_to_SF_ANGLED(angle)); 
-		_sprite->SetRotation(getAngle()+0.1); 
+		float angle = Utility::RAD_to_DEG(_body->a);
+		if(angle < 0) angle = (int)angle % 360;	// 1-360
+		if(angle < 0) angle = (int)angle % -360;	// 1-360
+		_sprite->SetRotation(Utility::CP_to_SF_ANGLED(angle)); 
+//		_sprite->SetRotation(getAngle()+0.1); 
 	}
 
 	// Debug
@@ -96,7 +97,6 @@ void GameObject::configureObject(goConfig config) {
 	cpBodySetVel(_body, config.vel);
 	cpBodySetForce(_body, config.force);
 	
- 
 	if(!_cpShapes.size()) {		// Someday this can hold multiple shapes
 		_cpShapes.push_back(cpSpaceAddShape(settings->space, cpCircleShapeNew(_body, config.radius, cpvzero)));
 	}
@@ -110,11 +110,11 @@ void GameObject::configureObject(goConfig config) {
 	if(!_sfShape) _sfShape = new sf::Shape();
 
 //	if(config.img_id) {
+		_sprite->SetCenter(config.radius, config.radius);
 		setSpriteImage(settings->images->getImageById(config.img_id));
 		_sprite->Resize(float(config.radius*2), float(config.radius*2));
-		_sprite->SetCenter(config.radius * 2, config.radius * 2);
 //	} else {
-//		*_sfShape = sf::Shape::Circle(0.0, 0.0, (float)radius, sf::Color(255, 255, 255)); 
+		*_sfShape = sf::Shape::Circle(0.0, 0.0, (float)config.radius, sf::Color(255, 255, 255)); 
 //	}
 
 		// To do - Use config.parent for collision masking

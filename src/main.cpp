@@ -58,10 +58,14 @@ int main(int argc, int argv[]) {
 	cpSpaceSetGravity(settings->space, gravity);
   
 	// Screen Borders - Add static line segment shapes
-	sf::Shape borderBottom = sf::Shape::Line(0, 600, 800, 600, 2, sf::Color::Red);
+	//sf::Shape borderBottom = sf::Shape::Line(0, 600, 800, 600, 2, sf::Color::Red);
 	sf::Shape borderTop = sf::Shape::Line(0, 0, 800, 0, 2, sf::Color::Red);
 	sf::Shape borderLeft = sf::Shape::Line(0, 0, 0, 600, 2, sf::Color::Red);
-	sf::Shape borderRight = sf::Shape::Line(800, 0, 800, 600, 2, sf::Color::Red);
+	//sf::Shape borderRight = sf::Shape::Line(800, 0, 800, 600, 2, sf::Color::Red);
+	sf::Shape borderBottom = sf::Shape::Line(0, 300, 800, 300, 2, sf::Color::Red);
+//	sf::Shape borderTop = sf::Shape::Line(0, 0, 400, 0, 2, sf::Color::Red);
+//	sf::Shape borderLeft = sf::Shape::Line(0, 0, 0, 300, 2, sf::Color::Red);
+	sf::Shape borderRight = sf::Shape::Line(400, 0, 400, 600, 2, sf::Color::Red);
 
 	cpShape *cps_brdrBot = cpSegmentShapeNew(space->staticBody, cpv(0, 600), cpv(800, 600), 0);
 	cpShape *cps_brdrTop = cpSegmentShapeNew(space->staticBody, cpv(0, 0), cpv(800, 0), 0);					// Todo - Move this to object manager
@@ -105,10 +109,15 @@ int main(int argc, int argv[]) {
 
 	//Debug Text
 	sf::String debugTxt1;
-//    debugTxt1.SetFont(Cheeseburger);
 	debugTxt1.SetSize(18.f);
     debugTxt1.Move(10.f, 450.f);
 //    debugTxt1.SetColor(sf::Color(100, 100, 100));
+
+	// Ship debug
+	sf::String debugTxtShip;
+	debugTxtShip.SetSize(18.f);
+    debugTxtShip.Move(10.f, 10.f);
+
 
 	// Control Display
 	sf::String controlsTxt;					
@@ -222,6 +231,16 @@ int main(int argc, int argv[]) {
 							"Force=(" << (int)testShip->getForce().x << "," << (int)testShip->getForce().y << ")\n" <<
 							"ObjManagerTotal=("<< goManager->getObjTotal() << ")\n";
 				debugTxt1.SetText(ssDebug.str());
+				// SHIP DEBUG
+				ssDebug.str("");
+				ssDebug <<	"Pos=(" << (int)(testShip->getPos().x) << "," << (int)(testShip->getPos().y) << ")\n" <<
+							"Center=(" << (int)(testShip->getSprite()->GetCenter().x) << "," << (int)(testShip->getSprite()->GetCenter().y) << ")\n" <<
+							"sprite - width="<< (int)(testShip->getSprite()->GetSize().x) << " height=" << (int)(testShip->getSprite()->GetSize().y) << ")\n" <<
+							"shape - l="<< (int)(testShip->getFirstShape()->bb.l) << ")\n" <<
+							"shape - r="<< (int)(testShip->getFirstShape()->bb.r) << ")\n" <<
+							"shape - b="<< (int)(testShip->getFirstShape()->bb.b) << ")\n" <<
+							"shape - t="<< (int)(testShip->getFirstShape()->bb.t) << ")\n";
+				debugTxtShip.SetText(ssDebug.str());
 			}
 
  
@@ -242,6 +261,7 @@ int main(int argc, int argv[]) {
 
 
 		// TEXT
+		settings->app->Draw(debugTxtShip);
 		settings->app->Draw(controlsTxt);
 		settings->app->Draw(fpsTxt);
 		settings->app->Draw(debugMove);

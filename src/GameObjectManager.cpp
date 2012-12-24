@@ -1,4 +1,5 @@
 #include "GameObjectManager.h"
+#include "Utility.h"
 
 
 GameObjectManager::GameObjectManager() :
@@ -29,7 +30,7 @@ GameObject* GameObjectManager::createObject(Settings::object_type type) {
 			10.0f,				// mass
 			Images::IMG_SPACESHIP,	// Image id
 			cpv(400, 300),		// position
-			0.f,				// angle
+			static_cast<float>(PI2)/2.f,				// angle
 			cpvzero,			// velocity
 			cpvzero,			// force
 			settings));

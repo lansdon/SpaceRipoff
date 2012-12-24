@@ -59,6 +59,8 @@ public:
 	cpVect getVel() { return cpBodyGetVel(_body); };
 	cpVect getForce() { return (_body ? _body->f : cpvzero); };
 	cpFloat getAngle() { return (_body ? _body->a : 0.0f); };
+	cpFloat getWidth() { return _cpShapes[0]->bb.b; }
+	cpShape* getFirstShape() { return _cpShapes[0]; }
 
 	void setPos(cpVect pos) { cpBodySetPos(_body, pos); };
 	void setVel(cpVect vel) { cpBodySetVel(_body, vel); };
